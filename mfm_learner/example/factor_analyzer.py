@@ -256,7 +256,8 @@ def main(factor_names, start_date, end_date, index_code, periods, num):
     :param periods: 调仓周期，如 20,30
     :param num: 股票池中使用多少只作为测试子集，仅用于测试
     """
-
+    logger.debug("开始分析因子，因子：%r，开始日期：%r，结束日期：%r，股票池：%r，调仓周期：%r，股票数量：%r", factor_names,
+                 start_date, end_date, index_code, periods, num)
     pd.set_option('display.max_rows', 1000)
     matplotlib.rcParams['font.sans-serif'] = ['Arial Unicode MS']  # 指定默认字体
     matplotlib.rcParams['axes.unicode_minus'] = False  # 正常显示负号
@@ -358,6 +359,7 @@ if __name__ == '__main__':
     else:
         factor_names = [args.factor]
 
+    print(factor_names)
     main(factor_names,
          args.start,
          args.end,
