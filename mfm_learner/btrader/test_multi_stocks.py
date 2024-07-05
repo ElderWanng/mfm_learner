@@ -1,6 +1,6 @@
 from mfm_learner.datasource import datasource_factory
-from mfm_learner.example.backtest import data_loader
-from mfm_learner.example.backtest.winrate_analyzer import WinRateAnalyzer, StatObserver
+from example.backtest import data_loader
+from example.backtest import WinRateAnalyzer, StatObserver
 from mfm_learner.utils import utils
 
 """

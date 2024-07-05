@@ -3,6 +3,8 @@ import time
 
 import sqlalchemy
 import pandas as pd
+from sqlalchemy import text
+
 from mfm_learner.utils import utils
 
 EALIEST_DATE = '20080101'  # 最早的数据日期
@@ -22,9 +24,11 @@ def is_table_index_exist(engine, name):
 
 
 def run_sql(engine, sql):
-    c = engine.connect()
-    sql = (sql)
-    result = c.execute(sql)
+    # c = engine.connect()
+    # sql = (sql)
+    # result = c.execute(sql)
+    with engine.connect() as conn:
+        result = conn.execute(text(sql))
     return result
 
 
@@ -51,7 +55,14 @@ def create_db_index(engine, table_name, df):
     if not index_sql: return
 
     start_time = time.time()
-    engine.execute(index_sql)
+
+    # print all method names of engine
+    # print(dir(engine))
+    print(index_sql)
+    # engine.execute(index_sql)
+    # run_sql(engine, index_sql)
+    with engine.connect() as conn:
+        conn.execute(index_sql)
     logger.debug("在表[%s]上创建索引，耗时: %.2f %s", table_name, time.time() - start_time, index_sql)
 
 

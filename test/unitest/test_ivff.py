@@ -1,7 +1,7 @@
 from mfm_learner.utils import utils
 utils.init_logger()
 from mfm_learner.datasource import datasource_factory
-from mfm_learner.example.factors.ivff import IVFFFactor
+from example.factors.ivff import IVFFFactor
 
 
 # pytest test/unitest/test_ivff.py -s

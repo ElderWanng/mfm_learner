@@ -6,8 +6,7 @@ from mfm_learner.utils import utils
 
 utils.init_logger()
 from mfm_learner.datasource import datasource_utils
-from mfm_learner.example.backtest.strategy_multifactors import MultiFactorStrategy
-import backtrader as bt
+from example.backtest import MultiFactorStrategy
 
 
 def test_neutralize():

@@ -72,7 +72,7 @@ def dynamic_instantiation(package_name, parent_class):
 # python -m mfm_learner.utils.dynamic_loader
 if __name__ == "__main__":
     utils.init_logger()
-    from mfm_learner.example.factors.factor import Factor
+    from example.factors.factor import Factor
 
     class_dict = dynamic_instantiation("example.factors", Factor)
     logger.debug("所有的加载类：%r", class_dict)

@@ -31,17 +31,26 @@ class DatabaseDataSource(DataSource):
                 self.db_engine)
             return df
 
+    def __daily_batch(self, stock_codes, start_date=None, end_date=None):
+        # Convert the list of stock codes into a format suitable for SQL IN clause
+        stock_codes_str = ', '.join([f'"{code}"' for code in stock_codes])
+
+        # Construct the SQL query based on whether start_date and end_date are provided
+        if start_date is None or end_date is None:
+            query = f'select * from daily_hfq where ts_code IN ({stock_codes_str})'
+        else:
+            query = f'select * from daily_hfq where ts_code IN ({stock_codes_str}) and trade_date>="{start_date}" and trade_date<="{end_date}"'
+
+        # Execute the query and return the result
+        df = pd.read_sql(query, self.db_engine)
+        return df
     @post_query
     def daily(self, stock_code, start_date=None, end_date=None):
         if type(stock_code) == list:
             df_all = None
             start_time = time.time()
-            for i, stock in enumerate(stock_code):
-                df_daily = self.__daliy_one(stock, start_date, end_date)
-                if df_all is None:
-                    df_all = df_daily
-                else:
-                    df_all = df_all.append(df_daily)
+            df_all = []
+            df_all = self.__daily_batch(stock_code, start_date, end_date)
             logger.debug("获取 %s ~ %s %d 只股票的交易数据：%d 条, 耗时 %.2f 秒",
                          start_date, end_date, len(stock_code), len(df_all), time.time() - start_time)
             return df_all
@@ -56,10 +65,10 @@ class DatabaseDataSource(DataSource):
         assert type(stock_code) == list or type(stock_code) == str, type(stock_code)
         if type(stock_code) == list:
             start_time = time.time()
-            df_basics = [self.__daily_basic_one(stock, start_date, end_date) for stock in stock_code]
-            logger.debug("获取%d只股票的每日基本信息数据%d条，耗时 : %.2f秒", len(stock_code), len(df_basics), time.time() - start_time)
+            df = self._daily_basic_batch(stock_code, start_date, end_date)
+            logger.debug("获取%d只股票的每日基本信息数据%d条，耗时 : %.2f秒", len(stock_code), len(df), time.time() - start_time)
             # print(df_basics)
-            return pd.concat(df_basics)
+            return df
         return self.__daily_basic_one(stock_code, start_date, end_date)
 
     def __daily_basic_one(self, stock_code, start_date, end_date):
@@ -68,6 +77,15 @@ class DatabaseDataSource(DataSource):
             f'select * from daily_basic \
                 where ts_code="{stock_code}" and trade_date>="{start_date}" and trade_date<="{end_date}"',
             self.db_engine)
+        return df
+
+    def _daily_basic_batch(self, stock_codes, start_date, end_date):
+        # Convert the list of stock codes into a format suitable for SQL IN clause
+        stock_codes_str = ', '.join([f'"{code}"' for code in stock_codes])
+        # Construct the SQL query based on whether start_date and end_date are provided
+        query = f'select * from daily_basic where ts_code IN ({stock_codes_str}) and trade_date>="{start_date}" and trade_date<="{end_date}"'
+        # Execute the query and return the result
+        df = pd.read_sql(query, self.db_engine)
         return df
 
     # 指数日线行情
@@ -127,8 +145,9 @@ class DatabaseDataSource(DataSource):
     @post_query
     def get_factor(self, name, stock_codes, start_date, end_date):
         if not db_utils.is_table_exist(self.db_engine,f"factor_{name}"):
-            raise ValueError(f"因子表factor_{name}在数据库中不存在")
-
+            # raise ValueError(f"因子表factor_{name}在数据库中不存在")
+            logger.warning(f"因子表factor_{name}在数据库中不存在")
+            return None
         stock_codes = db_utils.list_to_sql_format(stock_codes)
         sql = f"""
             select * 

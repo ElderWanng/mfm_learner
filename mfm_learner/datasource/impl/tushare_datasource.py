@@ -3,6 +3,7 @@ import logging
 import random
 import time
 
+import pandas as pd
 import tushare
 
 from mfm_learner import utils
@@ -59,15 +60,15 @@ class TushareDataSource(DataSource):
 
     @post_query
     def daily(self, stock_code, start_date, end_date, fields=None):
-        if type(stock_code) == list:
+        if not isinstance(stock_code, str):
             logger.debug("获取多只股票的交易数据：%r", ",".join(stock_code))
-            df_all = None
+            df_list = []
             for stock in stock_code:
                 df_daily = self.daliy_one(stock, start_date, end_date, fields)
-                if df_all is None:
-                    df_all = df_daily
-                else:
-                    df_all = df_all.append(df_daily)
+                if df_daily is not None and not df_daily.empty:
+                    df_list.append(df_daily)
+
+            df_all = pd.concat(df_list, ignore_index=True)
             logger.debug("获取 %s ~ %s 多只股票的交易数据：%d 条", start_date, end_date, len(df_all))
             return df_all
         else:
@@ -133,7 +134,7 @@ class TushareDataSource(DataSource):
         assert df is not None or len(df) == 0, "取得index_weight失败：" + start_date
         logger.debug("获得日期%s的指数%s的成分股：%d 个", start_date, index_code, len(df))
         _check_lenght(df)
-        return df['con_code'].uniq().tolist()
+        return df[['con_code']].drop_duplicates()
 
     # https://tushare.pro/document/2?doc_id=181
     @post_query

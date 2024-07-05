@@ -10,7 +10,7 @@ from mfm_learner.utils import utils
 utils.init_logger()
 
 from mfm_learner.datasource import datasource_factory, datasource_utils
-from mfm_learner.example import factor_utils
+from example import factor_utils
 
 allowed_error = 0.00000001
 
@@ -46,7 +46,7 @@ def test_neutralize():
     # 市值数据
     df_mv = datasource_factory.get().daily_basic(stocks, start_date, end_date)
     df_mv = datasource_utils.reset_index(df_mv)
-    neutralized_factor = factor_utils.neutralize(df_factor,df_stock_basic, df_mv['total_mv'])
+    neutralized_factor = factor_utils.neutralize(df_factor, df_stock_basic, df_mv['total_mv'])
 
     print("中性化结果：")
     print(neutralized_factor)

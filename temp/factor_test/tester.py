@@ -4,7 +4,7 @@
 """
 from pandas import Series
 
-from mfm_learner.example import factor_utils
+from example import factor_utils
 
 FACTORS = {
     'market_value': market_value,

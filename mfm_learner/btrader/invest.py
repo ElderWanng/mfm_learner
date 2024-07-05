@@ -11,7 +11,7 @@ import backtrader as bt
 from backtrader.feeds import PandasData
 
 from mfm_learner.datasource import datasource_factory
-from mfm_learner.example.factor_backtester import comply_backtrader_data_format
+from example.factor_backtester import comply_backtrader_data_format
 
 import matplotlib.pyplot as plt
 from backtrader.plot import Plot_OldSync

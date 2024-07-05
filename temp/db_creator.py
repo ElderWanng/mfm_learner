@@ -13,7 +13,7 @@ import sqlalchemy
 
 from mfm_learner.utils import utils
 
-BASE_DIR = "data/tushare_data/data"
+BASE_DIR = "/Users/wangtianshu/PycharmProjects/mfm_learner/example/data/"
 ROWS = None # 测试的话，改成100，全量改成None
 
 # 加载文件夹中的所有csv文件
@@ -60,7 +60,9 @@ for i,file in enumerate(files):
     if "ts_code" in df.columns and "ann_date" in df.columns:
         index_sql = "create index {}_code_date on {} (ts_code,ann_date);".format(table_name, table_name)
     if index_sql:
-        db_engine.execute(index_sql)
+        with db_engine.connect() as conn:
+            conn.execute(text(index_sql))
+        # db_engine.execute(index_sql)
         print("索引 [%.2f] 秒: %s" % (time.time()-start_time, index_sql))
 
     print("------------------------------ 完成 %d/%d ------------------------------" %(i,len(files)))

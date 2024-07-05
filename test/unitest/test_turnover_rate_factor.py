@@ -1,7 +1,7 @@
 from mfm_learner.utils import utils
 utils.init_logger()
 from mfm_learner.datasource import datasource_factory
-from mfm_learner.example.factors.turnover_rate import TurnOverFactor
+from example.factors.turnover_rate import TurnOverFactor
 
 
 # pytest test/unitest/test_turnover_rate_factor.py -s

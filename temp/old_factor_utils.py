@@ -7,12 +7,10 @@ from pandas import DataFrame, Series
 from sklearn import preprocessing
 
 from mfm_learner.datasource import datasource_factory, datasource_utils
-from mfm_learner.example.factors.clv import CLVFactor
-from mfm_learner.example.factors.ivff import IVFFFactor
-from mfm_learner.example.factors.market_value import MarketValueFactor
-from mfm_learner.example.factors.momentum import MomentumFactor
-from mfm_learner.example.factors.peg import PEGFactor
-from mfm_learner.example.factors.turnover_rate import TurnOverFactor
+from example.factors.clv import CLVFactor
+from example.factors.market_value import MarketValueFactor
+from example.factors.momentum import MomentumFactor
+from example.factors.peg import PEGFactor
 from mfm_learner.utils import utils
 
 logger = logging.getLogger(__name__)

@@ -29,7 +29,9 @@ def connect_db():
     db = CONF['datasources']['mysql']['db']
     host = CONF['datasources']['mysql']['host']
     port = CONF['datasources']['mysql']['port']
-    engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}?charset={}".format(uid, pwd, host, port, db, 'utf8'))
+    login_cmd = "mysql+pymysql://{}:{}@{}:{}/{}?charset={}".format(uid, pwd, host, port, db, 'utf8')
+    # print(login_cmd)
+    engine = create_engine(login_cmd)
     # engine = create_engine('sqlite:///' + DB_FILE + '?check_same_thread=False', echo=echo)  # 是否显示SQL：, echo=True)
     return engine
 
