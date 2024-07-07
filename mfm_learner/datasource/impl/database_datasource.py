@@ -34,14 +34,8 @@ class DatabaseDataSource(DataSource):
     @post_query
     def daily(self, stock_code, start_date=None, end_date=None):
         if type(stock_code) == list:
-            df_all = None
             start_time = time.time()
-            for i, stock in enumerate(stock_code):
-                df_daily = self.__daliy_one(stock, start_date, end_date)
-                if df_all is None:
-                    df_all = df_daily
-                else:
-                    df_all = df_all.append(df_daily)
+            df_all = self._daily_batch(stock_code, start_date, end_date)
             logger.debug("获取 %s ~ %s %d 只股票的交易数据：%d 条, 耗时 %.2f 秒",
                          start_date, end_date, len(stock_code), len(df_all), time.time() - start_time)
             return df_all
@@ -49,6 +43,21 @@ class DatabaseDataSource(DataSource):
             df_one = self.__daliy_one(stock_code, start_date, end_date)
             logger.debug("获取 %s ~ %s 股票[%s]的交易数据：%d 条", start_date, end_date, stock_code, len(df_one))
             return df_one
+
+    @post_query
+    def _daily_batch(self, stock_codes, start_date, end_date):
+        # 一次性获取多只股票的数据
+        stock_codes = db_utils.list_to_sql_format(stock_codes)
+        if start_date is None or end_date is None:
+            df = pd.read_sql(
+                f'select * from daily_hfq where ts_code in ({stock_codes})',
+                self.db_engine)
+        else:
+            df = pd.read_sql(
+                f'select * from daily_hfq where ts_code in ({stock_codes}) and trade_date>="{start_date}" and trade_date<="{end_date}"',
+                self.db_engine)
+        return df
+
 
     @logging_time
     @post_query

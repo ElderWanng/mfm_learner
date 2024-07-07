@@ -201,7 +201,7 @@ def plot_quantile_cumulative_returns(quantile_cumulative_returns, factor_name, p
     plt.clf()
     fig, axes = plt.subplots(len(quantile_cumulative_returns), 1, figsize=(18, 18))
     # subplots很诡异，如果只有1个subplot，返回的ax是个单数，而不是list，所以统一成list
-    if type(axes) != list:
+    if not isinstance(axes, np.ndarray):
         axes = [axes]
     fig.tight_layout()  # 调整整体空白
     plt.subplots_adjust(wspace=0, hspace=0.3)  # 调整子图间距
@@ -211,7 +211,7 @@ def plot_quantile_cumulative_returns(quantile_cumulative_returns, factor_name, p
         ax = axes[i]  # 1D,5D,10D对应的axis
         color = cm.rainbow(np.linspace(0, 1, quantile))
         ymin, ymax = one_period_quantile_cumulative_returns.min(), one_period_quantile_cumulative_returns.max()
-        ax.ylabel = 'Log Cumulative Returns'
+        ax.set_ylabel('Log Cumulative Returns')
         ax.set_title('Cumulative Return by Quantile[{}D] for factor {}'.format(periods[i], factor_name))
         ax.set_xlabel('')
         # ax.yscale = 'symlog'

@@ -358,7 +358,7 @@ def neutralize(factor_df, df_stock_basic, df_mv):
 def get_factor_names():
     class_dict = dynamic_loader.dynamic_instantiation("example.factors", Factor)
     names = []
-    for _, cls in class_dict:
+    for _, cls in class_dict.items():
         factor_name = cls().name()
         if type(factor_name) == list:
             names += factor_name

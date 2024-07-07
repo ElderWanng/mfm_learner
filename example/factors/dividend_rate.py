@@ -39,7 +39,7 @@ class DividendRateFactor(Factor):
         super().__init__()
 
     def name(self):
-        return "dividend_rate_ttm嗯，嗯。尴尬现"
+        return "dividend_rate_ttm"
 
     def cname(self):
         return "股息率"

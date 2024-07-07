@@ -19,6 +19,9 @@ def main(factor_name, start_date, end_date, index_code, stock_num):
     start_time = time.time()
 
     class_dict = dynamic_loader.dynamic_instantiation("example.factors", Factor)
+    # print all available factors name
+    names = [clazz().name() for _, clazz in class_dict.items()]
+    logger.info("所有因子名：%s", names)
     if factor_name == "all":
         for _, clazz in class_dict.items():
             factor = clazz()

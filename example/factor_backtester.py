@@ -149,7 +149,7 @@ def main(start_date, end_date, index_code, period, stock_num, factor_names, risk
     logger.debug('回测期间：%r ~ %r , 初始资金: %r', start_date, end_date, start_cash)
     # 运行回测
     results = cerebro.run(optreturn=True)
-
+    cerebro.plot()
     show_stat(cerebro, results, stock_codes, factor_names,
               start_cash, start_date, end_date, period,
               df_benchmark_index,atr_period, atr_times)
